@@ -1,0 +1,45 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<body>
+    <h3>This is Admin page!</h3>
+
+    <div>
+        <select id="users">
+            <option value="0">user to blacklist</option>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.email }}</option>
+            {% endfor %}
+        </select>
+        <a href="javascript:void(0)" onclick="addToBlackList()">Add User to blacklist</a>
+    </div>
+
+    <ul>
+        {% for item in list %}
+            <li>{{ item.user.username }} - {{ item.user.email }}
+                <a href="javascript:void(0)" onclick="removeFromBlackList({{ item.user.id }})">X</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</head>
+
+<script>
+    function addToBlackList() {
+        var userId = $("#users").find(":selected").val();
+        jQuery.ajax({
+            type:"PUT",
+            url: "/app_dev.php/admin/add_to_blacklist",
+            data: JSON.stringify({userId:userId}),
+            dataType: "json",
+        });
+    }
+
+    function removeFromBlackList(userId) {
+        jQuery.ajax({
+            type:"DELETE",
+            url: "/app_dev.php/admin/remove_from_blacklist",
+            data: JSON.stringify({userId:userId}),
+            dataType: "json",
+        });
+    }
+</script>

@@ -1,0 +1,33 @@
+security:
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            form_login:
+                provider: our_db_provider
+                login_path: login
+                check_path: login
+            oauth:
+                resource_owners:
+                  github: "/connect/check-github"
+                login_path: /login_social
+                use_forward: false
+                failure_path: /login_social
+                oauth_user_provider:
+                  service: my.oauth_aware.user_provider.service
+
+    access_control:
+        - { path: '^/admin', roles: ROLE_ADMIN }
